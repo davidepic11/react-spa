@@ -19,9 +19,9 @@ function LoginPage() {
       return;
     }
 
-    // Determine user type
+    
     const user = users[username];
-    // set user in local storage as "currentUser" or use a global store
+   
     localStorage.setItem("currentUser", JSON.stringify(user));
     console.log("Logged in user:", user);
 

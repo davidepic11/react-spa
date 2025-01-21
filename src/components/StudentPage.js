@@ -8,19 +8,19 @@ function StudentPage() {
   const [teams, setTeams] = useState({});
   const [currentUser, setCurrentUser] = useState(null);
 
-  // For link requirements
+ 
   const [requirementDescription, setRequirementDescription] = useState("");
   const [requirementType, setRequirementType] = useState("");
 
-  // For uploading project links
+  
   const [projectLink, setProjectLink] = useState("");
   const [selectedRequirementIndex, setSelectedRequirementIndex] = useState("");
 
-  // For grading
+ 
   const [studentNumber, setStudentNumber] = useState("");
 
   useEffect(() => {
-    // Load localStorage data on mount
+   
     const storedUsers = JSON.parse(localStorage.getItem("users")) || {};
     const storedTeams = JSON.parse(localStorage.getItem("teams")) || {};
     const userData = JSON.parse(localStorage.getItem("currentUser"));
@@ -36,7 +36,7 @@ function StudentPage() {
     setCurrentUser(userData);
   }, [navigate]);
 
-  // Helper to update localStorage whenever we change users/teams/currentUser
+ 
   const updateLocalStorage = (newUsers, newTeams, newUser = null) => {
     if (newUsers) {
       localStorage.setItem("users", JSON.stringify(newUsers));
@@ -52,7 +52,7 @@ function StudentPage() {
     }
   };
 
-  // Utility: check if the student can still modify a grade (7-day window)
+  //Partea de update din CRUD
   const canModifyGrade = (teamObj, graderName) => {
     if (!teamObj) return false;
     const entry = teamObj.grades.find((g) => g.grader === graderName);
@@ -62,7 +62,7 @@ function StudentPage() {
     return elapsed <= timeframe;
   };
 
-  // Utility: get time left
+ 
   const getRemainingTime = (teamObj, graderName) => {
     if (!teamObj) return null;
     const entry = teamObj.grades.find((g) => g.grader === graderName);
@@ -84,9 +84,7 @@ function StudentPage() {
     return `${days} days, ${hours} hours, ${minutes} minutes`;
   };
 
-  /* =========================
-     1) Choose Team
-  ==========================*/
+
   const chooseTeam = (teamName) => {
     if (!currentUser) return;
     const updatedTeams = { ...teams };
@@ -112,9 +110,7 @@ function StudentPage() {
     alert(`You have joined ${teamName}!`);
   };
 
-  /* =========================
-     2) Add Link Requirement
-  ==========================*/
+ 
   const addLinkRequirement = () => {
     if (!currentUser?.team) {
       alert("You must be in a team to add requirements.");
@@ -144,16 +140,13 @@ function StudentPage() {
     setRequirementType("");
   };
 
-  // Return link requirements for the user's own team
   const getLinkRequirementsForTeam = () => {
     if (!currentUser?.team) return [];
     const tObj = teams[currentUser.team];
     return tObj ? tObj.linkRequirements : [];
   };
 
-  /* =========================
-     3) Upload Project Link
-  ==========================*/
+ 
   const uploadProjectLink = () => {
     if (!currentUser?.team) {
       alert("Must be in a team first!");
@@ -179,9 +172,7 @@ function StudentPage() {
     setSelectedRequirementIndex("");
   };
 
-  /* =========================
-     4) Load Random Project
-  ==========================*/
+ 
   const loadRandomProject = () => {
     if (!currentUser) return;
     if (currentUser.randomTeam) {
@@ -208,9 +199,7 @@ function StudentPage() {
     alert(`You have been assigned to grade ${randomTeamName}.`);
   };
 
-  /* =========================
-     5) Save Grade
-  ==========================*/
+ 
   const saveStudentNumber = () => {
     if (!currentUser) return;
     const randomTeamName = currentUser.randomTeam;
@@ -238,21 +227,21 @@ function StudentPage() {
     );
 
     if (!existingGrade) {
-      // Add new
+     
       gradingTeam.grades.push({
         grader: currentUser.username,
         grade: gradeVal,
         timestamp: now
       });
     } else {
-      // check timeframe
+     
       const timeframe = 7 * 24 * 60 * 60 * 1000;
       const elapsed = now - existingGrade.timestamp;
       if (elapsed > timeframe) {
         alert("You can no longer modify this grade (over 7 days).");
         return;
       }
-      // update
+     
       existingGrade.grade = gradeVal;
       existingGrade.timestamp = now;
     }
@@ -262,9 +251,7 @@ function StudentPage() {
     setStudentNumber("");
   };
 
-  /* =========================
-     6) Show Random Team Requirements + Links
-  ==========================*/
+  
   const renderRandomTeamDetails = () => {
     if (!currentUser?.randomTeam) {
       return <p>No project available to display.</p>;
@@ -278,7 +265,7 @@ function StudentPage() {
       <div>
         <h4>Details for {currentUser.randomTeam}</h4>
         
-        {/* Link Requirements */}
+        
         <h5>Link Requirements:</h5>
         <ul>
           {teamObj.linkRequirements.length > 0 ? (
@@ -303,16 +290,13 @@ function StudentPage() {
           )}
         </ul>
 
-        {/* Team Links (if you store them in teamLinks array) */}
+        
         
       </div>
     );
   };
 
-  /* =========================
-     7) Render Grading Section 
-     (existing grade, time left, etc.)
-  ==========================*/
+ 
   const renderGradingSection = () => {
     if (!currentUser?.randomTeam) {
       return <p>You have not been assigned to grade a team yet.</p>;
@@ -350,7 +334,6 @@ function StudentPage() {
         </div>
       );
     } else {
-      // no grade yet
       return (
         <div>
           <p>You have not submitted a grade for {currentUser.randomTeam} yet.</p>
@@ -366,12 +349,10 @@ function StudentPage() {
     }
   };
 
-  /* RENDER */
+ 
   if (!currentUser) {
     return <div>Loading...</div>;
   }
-
-  // Link requirements for the user's own team
   const myTeamReqs = currentUser.team
     ? teams[currentUser.team]?.linkRequirements || []
     : [];
@@ -401,7 +382,7 @@ function StudentPage() {
         </div>
       )}
 
-      {/* Link Requirements */}
+      
       {currentUser.team && (
         <div id="linkRequirementsSection">
           <h3>Add Link Requirement</h3>
@@ -440,7 +421,7 @@ function StudentPage() {
         </div>
       )}
 
-      {/* Project Upload Section */}
+     
       {currentUser.team && (
         <div id="projectUploadSection">
           <h3>Upload Project Link</h3>
@@ -466,7 +447,7 @@ function StudentPage() {
         </div>
       )}
 
-      {/* Random Project */}
+     
       {currentUser.team && (
         <div id="randomProjectSection" style={{ marginTop: "20px" }}>
           <h3>Random Project Display</h3>
@@ -483,7 +464,7 @@ function StudentPage() {
         </div>
       )}
 
-      {/* Grade Input */}
+      
       {currentUser.team && (
         <div id="studentNumberInput" style={{ marginTop: "20px" }}>
           <h3>Insert a Grade</h3>

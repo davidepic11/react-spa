@@ -23,7 +23,7 @@ function RegisterPage() {
       return;
     }
 
-    // Create the user object
+  
     users[username] = {
       username,
       password,

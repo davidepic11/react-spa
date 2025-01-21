@@ -19,7 +19,6 @@ function TeacherPage() {
     setTeams(storedTeams);
   }, [navigate]);
 
-  // replicate your getAverageGrade logic
   const getAverageGrade = (teamObj) => {
     if (!teamObj.grades || teamObj.grades.length < 3) {
       return "Not enough grades yet.";
